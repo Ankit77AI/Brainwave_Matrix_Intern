@@ -123,7 +123,7 @@ class DayPlanner {
         const timeSlotsContainer = document.getElementById('timeSlots');
         timeSlotsContainer.innerHTML = '';
         
-        for (let hour = 6; hour <= 23; hour++) {
+        for (let hour = 0; hour <= 23; hour++) {
             const timeSlot = document.createElement('div');
             timeSlot.className = 'time-slot';
             timeSlot.textContent = this.formatTime(hour);
@@ -145,11 +145,11 @@ class DayPlanner {
         
         // Only show indicator for current day and within schedule hours
         if (this.currentDate.toDateString() === now.toDateString() && 
-            currentHour >= 6 && currentHour <= 23) {
+            currentHour >= 0 && currentHour <= 23) {
             
             const indicator = document.getElementById('currentTimeIndicator');
             const timeSlotHeight = 60; // Height of each time slot in pixels
-            const startHour = 6;
+            const startHour = 0;
             
             const position = ((currentHour - startHour) * 60 + currentMinute) * (timeSlotHeight / 60);
             indicator.style.top = `${position}px`;
@@ -257,9 +257,11 @@ class DayPlanner {
             id: taskId,
             ...taskData,
             completed: false,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            date: this.currentDate.toISOString() // Store the date this task was created for
         };
         
+        console.log('Adding task:', task);
         this.tasks.set(taskId, task);
         this.showNotification('Task added successfully', 'success');
     }
@@ -330,9 +332,20 @@ class DayPlanner {
         tasksContainer.innerHTML = '';
         
         const currentDateKey = this.currentDate.toDateString();
+        console.log('Current date:', currentDateKey);
+        console.log('All tasks:', Array.from(this.tasks.values()));
+        
         const dayTasks = Array.from(this.tasks.values())
-            .filter(task => new Date(task.createdAt).toDateString() === currentDateKey)
+            .filter(task => {
+                // Check if task was created for the current date OR if it's a recurring task
+                const taskDate = task.date || task.createdAt;
+                const taskDateString = new Date(taskDate).toDateString();
+                console.log('Task:', task.title, 'Date:', taskDateString, 'Matches:', taskDateString === currentDateKey);
+                return taskDateString === currentDateKey;
+            })
             .filter(task => this.filterTask(task));
+        
+        console.log('Filtered tasks for current date:', dayTasks);
         
         dayTasks.forEach(task => {
             if (!task.completed || this.showCompleted) {
@@ -353,7 +366,7 @@ class DayPlanner {
         const endMinutes = this.timeToMinutes(task.endTime);
         const duration = endMinutes - startMinutes;
         
-        const top = (startMinutes - 6 * 60) * (60 / 60); // 6 AM start, 60px per hour
+        const top = (startMinutes - 0 * 60) * (60 / 60); // 12 AM start, 60px per hour
         const height = duration * (60 / 60);
         
         taskElement.style.top = `${top}px`;
@@ -389,7 +402,10 @@ class DayPlanner {
         
         const currentDateKey = this.currentDate.toDateString();
         const completedTasks = Array.from(this.tasks.values())
-            .filter(task => new Date(task.createdAt).toDateString() === currentDateKey)
+            .filter(task => {
+                const taskDate = task.date || task.createdAt;
+                return new Date(taskDate).toDateString() === currentDateKey;
+            })
             .filter(task => task.completed);
         
         if (completedTasks.length > 0 && this.showCompleted) {
@@ -451,7 +467,7 @@ class DayPlanner {
             
             // Update task times based on new position
             const newTop = parseInt(taskElement.style.top);
-            const startHour = 6;
+            const startHour = 0;
             const newStartMinutes = startHour * 60 + (newTop / 60) * 60;
             const duration = this.timeToMinutes(task.endTime) - this.timeToMinutes(task.startTime);
             
@@ -486,6 +502,7 @@ class DayPlanner {
     // Search and Filter
     onSearchInput(event) {
         this.searchQuery = event.target.value.toLowerCase();
+        console.log('Search query:', this.searchQuery);
         this.renderSchedule();
     }
 
@@ -509,13 +526,18 @@ class DayPlanner {
     filterTask(task) {
         // Priority filter
         if (this.priorityFilter !== 'all' && task.priority !== this.priorityFilter) {
+            console.log('Task filtered out by priority:', task.title, 'Priority:', task.priority, 'Filter:', this.priorityFilter);
             return false;
         }
         
         // Search filter
-        if (this.searchQuery && !task.title.toLowerCase().includes(this.searchQuery) && 
-            !task.description.toLowerCase().includes(this.searchQuery)) {
-            return false;
+        if (this.searchQuery) {
+            const titleMatch = task.title.toLowerCase().includes(this.searchQuery);
+            const descriptionMatch = task.description && task.description.toLowerCase().includes(this.searchQuery);
+            if (!titleMatch && !descriptionMatch) {
+                console.log('Task filtered out by search:', task.title, 'Search:', this.searchQuery);
+                return false;
+            }
         }
         
         return true;
