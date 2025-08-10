@@ -88,25 +88,25 @@
                     <form id="taskForm">
                         <div class="form-group">
                             <label for="taskTitle">Task Title *</label>
-                            <input type="text" id="taskTitle" required aria-label="Task title">
+                            <input type="text" id="taskTitle" name="taskTitle" required aria-label="Task title">
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="startTime">Start Time *</label>
-                                <input type="time" id="startTime" required aria-label="Start time">
+                                <input type="time" id="startTime" name="startTime" required aria-label="Start time">
                             </div>
                             <div class="form-group">
                                 <label for="endTime">End Time *</label>
-                                <input type="time" id="endTime" required aria-label="End time">
+                                <input type="time" id="endTime" name="endTime" required aria-label="End time">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="taskDescription">Description</label>
-                            <textarea id="taskDescription" rows="3" aria-label="Task description"></textarea>
+                            <textarea id="taskDescription" name="taskDescription" rows="3" aria-label="Task description"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="taskPriority">Priority</label>
-                            <select id="taskPriority" aria-label="Task priority">
+                            <select id="taskPriority" name="taskPriority" aria-label="Task priority">
                                 <option value="low">Low</option>
                                 <option value="medium" selected>Medium</option>
                                 <option value="high">High</option>
