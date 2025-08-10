@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Planner - Organize Your Daily Schedule</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">📅 Day Planner</h1>
+                <div class="header-controls">
+                    <button class="btn btn-secondary" id="darkModeToggle" aria-label="Toggle dark mode">
+                        🌙
+                    </button>
+                    <button class="btn btn-secondary" id="exportBtn" aria-label="Export tasks">
+                        📤 Export
+                    </button>
+                    <button class="btn btn-secondary" id="importBtn" aria-label="Import tasks">
+                        📥 Import
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Date and Controls Section -->
+            <section class="date-controls">
+                <div class="date-navigation">
+                    <button class="btn btn-icon" id="prevDay" aria-label="Previous day">◀</button>
+                    <div class="current-date">
+                        <h2 id="currentDate">Today</h2>
+                        <p id="currentDay">Monday, January 1</p>
+                    </div>
+                    <button class="btn btn-icon" id="nextDay" aria-label="Next day">▶</button>
+                </div>
+                <div class="date-picker">
+                    <input type="date" id="dateInput" aria-label="Select date">
+                </div>
+            </section>
+
+            <!-- Daily Quote Section -->
+            <section class="daily-quote" id="dailyQuote">
+                <p>"The only way to do great work is to love what you do." - Steve Jobs</p>
+            </section>
+
+            <!-- Search and Filter Section -->
+            <section class="search-filter">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search tasks..." aria-label="Search tasks">
+                    <button class="btn btn-icon" id="searchBtn" aria-label="Search">🔍</button>
+                </div>
+                <div class="filter-controls">
+                    <select id="priorityFilter" aria-label="Filter by priority">
+                        <option value="all">All Priorities</option>
+                        <option value="high">High Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                    </select>
+                    <button class="btn btn-secondary" id="completedToggle" aria-label="Toggle completed tasks view">
+                        ✅ Show Completed
+                    </button>
+                </div>
+            </section>
+
+            <!-- Add Task Section -->
+            <section class="add-task">
+                <button class="btn btn-primary" id="addTaskBtn" aria-label="Add new task">
+                    ➕ Add New Task
+                </button>
+            </section>
+
+            <!-- Task Modal -->
+            <div class="modal" id="taskModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">Add New Task</h3>
+                        <button class="btn btn-icon modal-close" id="closeModal" aria-label="Close modal">✕</button>
+                    </div>
+                    <form id="taskForm">
+                        <div class="form-group">
+                            <label for="taskTitle">Task Title *</label>
+                            <input type="text" id="taskTitle" required aria-label="Task title">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startTime">Start Time *</label>
+                                <input type="time" id="startTime" required aria-label="Start time">
+                            </div>
+                            <div class="form-group">
+                                <label for="endTime">End Time *</label>
+                                <input type="time" id="endTime" required aria-label="End time">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskDescription">Description</label>
+                            <textarea id="taskDescription" rows="3" aria-label="Task description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskPriority">Priority</label>
+                            <select id="taskPriority" aria-label="Task priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelTask">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Schedule Grid -->
+            <section class="schedule-container">
+                <div class="time-slots" id="timeSlots">
+                    <!-- Time slots will be generated by JavaScript -->
+                </div>
+                
+                <!-- Current Time Indicator -->
+                <div class="current-time-indicator" id="currentTimeIndicator"></div>
+                
+                <!-- Tasks Container -->
+                <div class="tasks-container" id="tasksContainer">
+                    <!-- Tasks will be rendered here -->
+                </div>
+            </section>
+
+            <!-- Completed Tasks Section -->
+            <section class="completed-tasks" id="completedTasksSection" style="display: none;">
+                <h3>✅ Completed Tasks</h3>
+                <div class="completed-tasks-list" id="completedTasksList">
+                    <!-- Completed tasks will be shown here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Notification Container -->
+        <div class="notification-container" id="notificationContainer"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
